@@ -13,5 +13,6 @@ out/
 # その他
 .setenv
 .command-memo
+*.log
 dist/
 upload/

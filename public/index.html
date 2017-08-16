@@ -21,23 +21,24 @@
 <div class="container-fluid">
     <h1>追い風</h1>
     <p>プロトタイプ開発中</p>
+    <p></p><a href="distance.html">地点情報の検証</a>(google.maps.geometry.spherical.computeDistanceBetween)ではID1から2は 8,720m となりますが、このページ (Cloudant Geospatial) では 8,856m となるようです。</p>
     <form class="form-horizontal">
         <div class="form-group">
             <label class="col-sm-2 control-label" for="latId">緯度 (Lat)</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="latId" placeholder="緯度を入力してください" value="36.651299">
+                <input type="text" class="form-control" id="latId" placeholder="緯度を入力してください" value="36.845518">
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label" for="lngId">経度 (Lng)</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="lngId" placeholder="経度を入力してください" value="138.180956">
+                <input type="text" class="form-control" id="lngId" placeholder="経度を入力してください" value="138.358598">
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label" for="radiusId">半径 (Radius) [m]</label>
             <div class="col-sm-10">
-                <input type="email" class="form-control" id="radiusId" placeholder="半径を入力してください" value="1000">
+                <input type="email" class="form-control" id="radiusId" placeholder="半径を入力してください" value="8856">
             </div>
         </div>
         <div class="form-group">
@@ -53,7 +54,11 @@
     $(function () {
         // ご参考 https://docs.cloudant.com/geo.html#example:-querying-a-cloudant-geo-index
         // Cloudant の ID、パスワードを記述していますが、サンプルということでご容赦願います。
-        const url = 'https://3758fb7c-8205-44a2-a3e3-710a18880b49-bluemix.cloudant.com/activity/_design/geodd/_geo/geoidx';
+        const
+            url = 'https://3758fb7c-8205-44a2-a3e3-710a18880b49-bluemix.cloudant.com/activity/_design/geodd/_geo/geoidx',
+            username = '3758fb7c-8205-44a2-a3e3-710a18880b49-bluemix',
+            password = 'a50e9f45c23a6cb855ed21a9bb95e850eab6916d2e4e46cb2c0ea447cbf78699',
+            credentials = btoa(username + ':' + password);
 
         $('#searchBtnId').on('click', function () {
             const
@@ -63,8 +68,6 @@
             $.ajax({
                 type: 'GET',
                 url: url,
-                username: '3758fb7c-8205-44a2-a3e3-710a18880b49-bluemix',
-                password: 'a50e9f45c23a6cb855ed21a9bb95e850eab6916d2e4e46cb2c0ea447cbf78699',
                 data: {
                     lat: lat,
                     lon: lng,
@@ -73,12 +76,11 @@
                     format: 'geojson'
                 },
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Authorization': 'Basic ' + credentials
                 },
                 dataType: 'json'
             }).done(function (value) {
-                console.log(value);
+                $('#resultId').html('<pre>' + JSON.stringify(value, undefined, 2) + '</pre>');
             }).fail(function (error) {
                 console.log('error:', error);
                 $('#resultId').html('<pre>' + JSON.stringify(error, undefined, 2) + '</pre>');

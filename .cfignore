@@ -11,6 +11,7 @@ out/
 .project
 
 # その他
+*.log
 .setenv
 .command-memo
 upload/
