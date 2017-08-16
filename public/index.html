@@ -5,11 +5,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Oikaze</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
 </head>
-
 <body>
-<h1>追い風</h1>
-<p>プロトタイプ開発中</p>
-</body>
 
+<div class="container-fluid">
+    <h1>追い風</h1>
+    <p>プロトタイプ開発中</p>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="latId">緯度 (Lat)</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="latId" placeholder="緯度を入力してください" value="36.651299">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="lngId">経度 (Lng)</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="lngId" placeholder="経度を入力してください" value="138.180956">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="radiusId">半径 (Radius) [m]</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="radiusId" placeholder="半径を入力してください" value="1000">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button id="searchBtnId" type="button" class="btn btn-primary">検索</button>
+            </div>
+        </div>
+    </form>
+    <div id="resultId"></div>
+</div>
+
+<script>
+    $(function () {
+        // ご参考 https://docs.cloudant.com/geo.html#example:-querying-a-cloudant-geo-index
+        // Cloudant の ID、パスワードを記述していますが、サンプルということでご容赦願います。
+        const url = 'https://3758fb7c-8205-44a2-a3e3-710a18880b49-bluemix.cloudant.com/activity/_design/geodd/_geo/geoidx';
+
+        $('#searchBtnId').on('click', function () {
+            const
+                lat = $('#latId').val(),
+                lng = $('#lngId').val(),
+                radius = $('#radiusId').val();
+            $.ajax({
+                type: 'GET',
+                url: url,
+                username: '3758fb7c-8205-44a2-a3e3-710a18880b49-bluemix',
+                password: 'a50e9f45c23a6cb855ed21a9bb95e850eab6916d2e4e46cb2c0ea447cbf78699',
+                data: {
+                    lat: lat,
+                    lon: lng,
+                    radius: radius,
+                    relation: 'contains',
+                    format: 'geojson'
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                dataType: 'json'
+            }).done(function (value) {
+                console.log(value);
+            }).fail(function (error) {
+                console.log('error:', error);
+                $('#resultId').html('<pre>' + JSON.stringify(error, undefined, 2) + '</pre>');
+            });
+        });
+    });
+</script>
+
+</body>
 </html>
