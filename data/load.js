@@ -12,7 +12,6 @@ const
 
 // アクティビティファイル
 const ACTIVITY_FILENAME = 'activity.json';
-const data = JSON.parse(fs.readFileSync(__dirname + '/' + ACTIVITY_FILENAME).toString());
 
 // 設計文書
 const GEO_INDEX = `function(doc) {
@@ -32,15 +31,10 @@ const DESIGN_DOC = {
 // データベースを使用する。
 const db = context.cloudant.db.use(context.DB_NAME);
 
-db.get(DESIGN_DOC._id,(error, body)=>{
-    if(error )
-   console.log(error);
-});
-
 // 設計文書を登録する。
 db.insert(DESIGN_DOC, (error, body) => {
     if (error) {
-        console.log(error);
+        console.log('error:', error);
     } else {
         console.log(`設計文書[${DESIGN_DOC._id}]を登録しました。`);
         console.log('----------');
@@ -50,13 +44,20 @@ db.insert(DESIGN_DOC, (error, body) => {
 });
 
 // データを登録する。
-db.bulk(data, (error, body) => {
+fs.readFile(__dirname + '/' + ACTIVITY_FILENAME, (error, data) => {
     if (error) {
-        console.log(error);
+        console.log('error:', error);
     } else {
-        console.log('文書を登録しました。');
-        console.log('----------');
-        console.log(JSON.stringify(data, undefined, 2));
-        console.log('----------');
+        const json = JSON.parse(data.toString());
+        db.bulk(json, (error, body) => {
+            if (error) {
+                console.log('error:', error);
+            } else {
+                console.log('文書を登録しました。');
+                console.log('----------');
+                console.log(JSON.stringify(json, undefined, 2));
+                console.log('----------');
+            }
+        });
     }
 });
