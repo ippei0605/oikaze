@@ -5,10 +5,10 @@ https://oikaze.au-syd.mybluemix.net/
 
 ## データ
 
-## アクティビティデータ
+### アクティビティデータ
 * data/activity.json に作成しました。
 
-## 設計文書
+### 設計文書
 * _design/geodd
 
   - インデックス /st_indexes/geoidx
@@ -34,7 +34,7 @@ https://oikaze.au-syd.mybluemix.net/
     }
     ```
 
-## データロード方法
+### データロード方法
 ```
 $ node data/load
 ```
@@ -44,7 +44,9 @@ $ node data/load
 
 > $ はプロンプトです。
 
-## プッシュ
+## アプリ
+
+### プッシュ
 1. Bluemix にログインする。 (パスワードを入力してください。)
     ```
     $ bx login -a https://api.au-syd.bluemix.net -u wbc_2017_1@jiec.co.jp -c 267f9050fc9a825549b77b20817c9d8f -s dev
