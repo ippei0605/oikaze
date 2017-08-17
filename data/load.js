@@ -13,14 +13,31 @@ const
 // アクティビティファイル
 const ACTIVITY_FILENAME = 'activity.json';
 
-// 設計文書
+// インデックス
 const GEO_INDEX = `function(doc) {
     if (doc.geometry && doc.geometry.coordinates) {
         st_index(doc.geometry);
     }
 }`;
+// マップファンクション
+const MAP_FUNCTION = `function (doc) {
+    var row = {
+        "_id": doc._id,
+        "_rev": doc._rev,
+        "type": doc.type,
+        "geometry": doc.geometry,
+        "properties": doc.properties,
+    };
+    emit(doc._id, row);
+}`;
+// 設計文書
 const DESIGN_DOC = {
     "_id": "_design/geodd",
+    "views": {
+        "list": {
+            "map": MAP_FUNCTION
+        }
+    },
     "st_indexes": {
         "geoidx": {
             "index": GEO_INDEX

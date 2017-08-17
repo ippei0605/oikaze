@@ -3,7 +3,38 @@
 ## テスト画面
 https://oikaze.au-syd.mybluemix.net/
 
-## データロード
+## データ
+
+## アクティビティデータ
+* data/activity.json に作成しました。
+
+## 設計文書
+* _design/geodd
+
+  - インデックス /st_indexes/geoidx
+    ```
+    function(doc) {
+      if (doc.geometry && doc.geometry.coordinates) {
+        st_index(doc.geometry);
+      }
+    }
+    ```
+
+  - マップ /views/list
+    ```
+    function (doc) {
+        var row = {
+            "_id": doc._id,
+            "_rev": doc._rev,
+            "type": doc.type,
+            "geometry": doc.geometry,
+            "properties": doc.properties,
+        };
+        emit(doc._id, row);
+    }
+    ```
+
+## データロード方法
 ```
 $ node data/load
 ```
