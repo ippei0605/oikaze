@@ -8,6 +8,9 @@ https://oikaze.au-syd.mybluemix.net/
 ### アクティビティデータ
 * data/activity.json に作成しました。
 
+### マスター
+* data/master.csv に作成しました。(Excel から抽出、LF, UTF-8 に変換)
+
 ### 設計文書
 * _design/geodd
 
