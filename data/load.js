@@ -13,6 +13,9 @@ const
 // アクティビティファイル
 const ACTIVITY_FILENAME = 'activity.json';
 
+// マスターファイル
+const MASTER_CSV = 'master.csv';
+
 // インデックス
 const GEO_INDEX = `function(doc) {
     if (doc.geometry && doc.geometry.coordinates) {
@@ -74,6 +77,40 @@ fs.readFile(__dirname + '/' + ACTIVITY_FILENAME, (error, data) => {
                 console.log('----------');
                 console.log(JSON.stringify(json, undefined, 2));
                 console.log('----------');
+            }
+        });
+    }
+});
+
+// マスターを登録する。
+fs.readFile(__dirname + '/' + MASTER_CSV, (error, data) => {
+    if (error) {
+        console.log('error:', error);
+    } else {
+        const rows = data.toString().split('\n');
+        const header = rows[0].split(',');
+        const keys = header.map((item) => {
+            return item.trim();
+        });
+
+        const masterJson = {};
+        rows.shift();
+        rows.forEach((item) => {
+            const column = item.split(',');
+            masterJson[column[0].trim()] = {};
+            masterJson[column[0].trim()][keys[1]] = column[1].trim();
+            masterJson[column[0].trim()][keys[2]] = column[2].trim();
+            masterJson[column[0].trim()][keys[3]] = column[3].trim();
+        });
+
+        db.insert({
+            "_id": "master",
+            "master": masterJson
+        }, (error, body) => {
+            if (error) {
+                console.log('error:', error);
+            } else {
+                console.log(body);
             }
         });
     }
