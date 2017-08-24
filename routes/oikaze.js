@@ -47,15 +47,40 @@ const timeline = (params) => {
     });
 };
 
+const classify = (url) => {
+    return new Promise((resolve, reject) => {
+        context.visualRecognition.classify({
+            url: url,
+            'Accept-Language': 'ja'
+        }, (error, value) => {
+            if (error) {
+                console.log('error:', error);
+                reject(error);
+            } else {
+                resolve(value);
+            }
+        });
+    });
+};
 
 router.get('/', (req, res) => {
     const twitterParams = {
         screen_name: req.query.screen_name,
         count: req.query.count
     };
+
+    let temp = {};
     timeline(twitterParams)
         .then((value) => {
-            res.json(value);
+            temp = value;
+            return Promise.all(value.images.map((url) => {
+                return classify(url);
+            }));
+        })
+        .then((value) => {
+            const result = temp;
+            result.classes = value;
+            res.json(result);
         })
         .catch((error) => {
             res.send(500).json({'error': error});
