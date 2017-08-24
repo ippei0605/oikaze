@@ -18,15 +18,13 @@ const
 const app = express();
 
 // ミドルウェアを設定する。
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 app.use('/', express.static(__dirname + '/public'));
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // ルートを設定する。
-// app.use('/', require('./routes/'));
+app.use('/oikaze', require('./routes/oikaze'));
 
 // リクエトを受付ける。
 app.listen(context.appEnv.port, function () {

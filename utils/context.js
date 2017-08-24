@@ -11,16 +11,27 @@
 const
     cfenv = require('cfenv'),
     Cloudant = require('cloudant'),
-    vcapServices = require('vcap_services');
+    vcapServices = require('vcap_services'),
+    watson = require('watson-developer-cloud');
 
-// データベース名を
+// データベース名
 const DB_NAME = 'activity';
 
-// 環境変数を取得する。
+// 環境変数
 const appEnv = cfenv.getAppEnv();
 
-// Cloudant NoSQL DB に接続する。
+// Cloudant NoSQL DB サービス
 const cloudant = new Cloudant(vcapServices.getCredentials('cloudantNoSQLDB'));
+
+// Visual Recognition サービス資格情報
+const visualRecognitionCreds = vcapServices.getCredentials('watson_vision_combined')
+
+// Visual Recognition サービス
+const visualRecognition = new watson.VisualRecognitionV3({
+    api_key: visualRecognitionCreds.api_key,
+    version: 'v3',
+    version_date: '2016-05-20'
+});
 
 /**
  * コンテキスト
@@ -33,5 +44,6 @@ const cloudant = new Cloudant(vcapServices.getCredentials('cloudantNoSQLDB'));
 module.exports = {
     appEnv: appEnv,
     DB_NAME: DB_NAME,
-    cloudant: cloudant
+    cloudant: cloudant,
+    visualRecognition: visualRecognition
 };

@@ -4,90 +4,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Oikaze</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
+    <title>Oikaze Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css"/>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.min.js"></script>
+    <style>
+
+        body {
+            padding: 30px;
+        }
+
+        .demo {
+            background: #1779ba;
+        }
+
+        .cell {
+            /*background: dodgerblue;*/
+            background: #1779ba;
+            line-height: 50px;
+            height: 50px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .cell:nth-child(odd) {
+            background: #37a0e6;
+        }
+
+    </style>
 </head>
+
 <body>
 
-<div class="container-fluid">
-    <h1>追い風</h1>
-    <p>プロトタイプ開発中</p>
-    <p></p><a href="distance.html">地点情報の検証</a>(google.maps.geometry.spherical.computeDistanceBetween)ではID1から2は 8,720m となりますが、このページ (Cloudant Geospatial) では 8,856m となるようです。</p>
-    <form class="form-horizontal">
-        <div class="form-group">
-            <label class="col-sm-2 control-label" for="latId">緯度 (Lat)</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="latId" placeholder="緯度を入力してください" value="36.845518">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label" for="lngId">経度 (Lng)</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="lngId" placeholder="経度を入力してください" value="138.358598">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label" for="radiusId">半径 (Radius) [m]</label>
-            <div class="col-sm-10">
-                <input type="email" class="form-control" id="radiusId" placeholder="半径を入力してください" value="8856">
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button id="searchBtnId" type="button" class="btn btn-primary">検索</button>
-            </div>
-        </div>
-    </form>
-    <div id="resultId"></div>
-</div>
+<h1>追い風テストドライバー</h1>
+<p class="text-right">只今、Foundation 勉強中・・・</p>
+
+<label>Twitter スクリーンネーム
+    <input type="text" value="AbeShinzo">
+</label>
+<label>Twitter タイムライン取得件数
+    <input type="number" value="20">
+</label>
+<label>天気を調べてたい地名
+    <input type="text" value="茨城県石岡市">
+</label>
+<button class="button" type="button">AI</button>
 
 <script>
-    $(function () {
-        // ご参考 https://docs.cloudant.com/geo.html#example:-querying-a-cloudant-geo-index
-        // Cloudant の ID、パスワードを記述していますが、サンプルということでご容赦願います。
-        const
-            url = 'https://3758fb7c-8205-44a2-a3e3-710a18880b49-bluemix.cloudant.com/activity/_design/geodd/_geo/geoidx',
-            username = '3758fb7c-8205-44a2-a3e3-710a18880b49-bluemix',
-            password = 'a50e9f45c23a6cb855ed21a9bb95e850eab6916d2e4e46cb2c0ea447cbf78699',
-            credentials = btoa(username + ':' + password);
-
-        $('#searchBtnId').on('click', function () {
-            const
-                lat = $('#latId').val(),
-                lng = $('#lngId').val(),
-                radius = $('#radiusId').val();
-            $.ajax({
-                type: 'GET',
-                url: url,
-                data: {
-                    lat: lat,
-                    lon: lng,
-                    radius: radius,
-                    relation: 'contains',
-                    format: 'geojson'
-                },
-                headers: {
-                    'Authorization': 'Basic ' + credentials
-                },
-                dataType: 'json'
-            }).done(function (value) {
-                $('#resultId').html('<pre>' + JSON.stringify(value, undefined, 2) + '</pre>');
-            }).fail(function (error) {
-                console.log('error:', error);
-                $('#resultId').html('<pre>' + JSON.stringify(error, undefined, 2) + '</pre>');
-            });
-        });
-    });
+    $(document).foundation();
 </script>
-
 </body>
 </html>
