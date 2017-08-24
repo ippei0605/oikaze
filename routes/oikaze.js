@@ -47,16 +47,49 @@ const timeline = (params) => {
     });
 };
 
-const classify = (url) => {
+const classify = (url, score) => {
     return new Promise((resolve, reject) => {
         context.visualRecognition.classify({
-            url: url,
-            'Accept-Language': 'ja'
+            "url": url,
+            "Accept-Language": "ja"
         }, (error, value) => {
             if (error) {
                 console.log('error:', error);
                 reject(error);
             } else {
+                let text = '';
+                value.images[0].classifiers[0].classes.forEach((item) => {
+                    if (item.score >= score) {
+                        text += item.class + '、';
+                    }
+                });
+                if (text) {
+                    text += 'の画像をアップロードしました。';
+                }
+                resolve(text);
+            }
+        });
+    });
+};
+
+const profile = (text) => {
+    return new Promise((resolve, reject) => {
+        context.personalityInsights.profile({
+            "text": text,
+            "consumption_preferences": true,
+            "raw_scores": true,
+            "headers": {
+                "content-type": "text/plain;charset=utf-8",
+                "content-language": "ja",
+                "accept": "application/json",
+                "accept-language": "ja"
+            }
+        }, (error, value) => {
+            if (error) {
+                console.log('error:', error);
+                reject(error);
+            } else {
+                console.log('value:', value);
                 resolve(value);
             }
         });
@@ -65,25 +98,30 @@ const classify = (url) => {
 
 router.get('/', (req, res) => {
     const twitterParams = {
-        screen_name: req.query.screen_name,
-        count: req.query.count
+        "screen_name": req.query.screen_name,
+        "count": req.query.count
     };
-
     let temp = {};
     timeline(twitterParams)
         .then((value) => {
             temp = value;
             return Promise.all(value.images.map((url) => {
-                return classify(url);
+                return classify(url, req.query.score);
             }));
         })
         .then((value) => {
-            const result = temp;
-            result.classes = value;
-            res.json(result);
+            temp.classes = value;
+            const text = temp.tweets.join(' ') + value.join(' ');
+            console.log('text:', text);
+            return profile(text);
+        })
+        .then((value) => {
+            temp.profile = value;
+            res.json(temp);
         })
         .catch((error) => {
-            res.send(500).json({'error': error});
+            console.log('error:', error);
+            res.status(500).json({'error': error});
         });
 });
 

@@ -42,19 +42,24 @@
 <h1>追い風テストドライバー</h1>
 <p class="text-right">只今、Foundation 勉強中・・・</p>
 
-<label>Twitter スクリーンネーム
-    <input type="text" id='screenNameId' value="AbeShinzo">
-</label>
-<label>Twitter タイムライン取得件数
-    <input type="number" id="countId" value="20">
-</label>
-<!--
-<label>天気を調べてたい地名
-    <input type="text" value="茨城県石岡市">
-</label>
--->
-<button class="button" type="button" id="aiBtnId">AI</button>
-<hr>
+<form>
+    <label>Twitter スクリーンネーム
+        <input type="text" id='screenNameId' value="AbeShinzo">
+    </label>
+    <label>Twitter タイムライン取得件数
+        <input type="number" id="countId" value="5">
+    </label>
+    <label>Visial Recognition スコア
+        <input type="number" id="scoreId" value="0.6" max="1" min="0">
+    </label>
+    <!--
+    <label>天気を調べてたい地名
+        <input type="text" value="茨城県石岡市">
+    </label>
+    -->
+    <button class="button" type="button" id="aiBtnId">AI</button>
+</form>
+
 <div id="resultId"></div>
 
 <script>
@@ -67,8 +72,10 @@
                 url: '/oikaze',
                 data: {
                     'screen_name': $('#screenNameId').val(),
-                    'count': $('#countId').val()
+                    'count': $('#countId').val(),
+                    'score': $('#scoreId').val()
                 },
+                cache: false,
                 dataType: 'json'
             }).done((value) => {
                 $('#resultId').html(`<pre>${JSON.stringify(value, undefined, 2)}</pre>`);

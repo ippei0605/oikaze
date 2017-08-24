@@ -24,13 +24,24 @@ const appEnv = cfenv.getAppEnv();
 const cloudant = new Cloudant(vcapServices.getCredentials('cloudantNoSQLDB'));
 
 // Visual Recognition サービス資格情報
-const visualRecognitionCreds = vcapServices.getCredentials('watson_vision_combined')
+const visualRecognitionCreds = vcapServices.getCredentials('watson_vision_combined');
 
 // Visual Recognition サービス
 const visualRecognition = new watson.VisualRecognitionV3({
     api_key: visualRecognitionCreds.api_key,
     version: 'v3',
     version_date: '2016-05-20'
+});
+
+
+// Personality Insights サービス資格情報
+const personalityInsightsCreds = vcapServices.getCredentials('personality_insights');
+
+// Personality Insights サービス
+var personalityInsights = new watson.PersonalityInsightsV3({
+    username: personalityInsightsCreds.username,
+    password: personalityInsightsCreds.password,
+    version_date: '2016-10-19'
 });
 
 /**
@@ -45,5 +56,6 @@ module.exports = {
     appEnv: appEnv,
     DB_NAME: DB_NAME,
     cloudant: cloudant,
+    personalityInsights: personalityInsights,
     visualRecognition: visualRecognition
 };

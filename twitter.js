@@ -35,6 +35,7 @@ client.get('statuses/user_timeline', params, (error, tweets, response) => {
                     if (error) {
                         console.log('error:', error);
                     } else {
+                        console.log('###');
                         console.log(JSON.stringify(value, undefined, 2));
                     }
                 });
