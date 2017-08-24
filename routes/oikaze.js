@@ -10,14 +10,56 @@
 // モジュールを読込む。
 const
     express = require('express'),
-    request = require('request');
+    Twitter = require('twitter'),
+    context = require('../utils/context');
 
 // ルーターを作成する。
 const router = express.Router();
 
-// Bluemix にログインする。
+const client = new Twitter({
+    consumer_key: 'E5za5OWhxmjsHR9L0gaMbnNhB',
+    consumer_secret: 'CMbg3wiemlAUyJ68ERvlWT7sYCx696XYCHraIpWljvwkQbn8Nz',
+    access_token_key: '268618165-h3SPrD5wXoHwFKCV7IByL0lClqWLRMIm8NxJ4OhB',
+    access_token_secret: 'YpgOYBRI2Os17tAPBCEAsnDcuZWlFXbqg421sngL67f41'
+});
+
+const timeline = (params) => {
+    return new Promise((resolve, reject) => {
+        client.get('statuses/user_timeline', params, (error, tweets, response) => {
+            if (error) {
+                console.log('error:', error);
+                reject(error);
+            } else {
+                let text = '', texts = [], images = [];
+                tweets.forEach((item) => {
+                    text += item.text;
+                    texts.push(item.text);
+                    if (item.extended_entities) {
+                        images.push(item.extended_entities.media[0].media_url_https);
+                    }
+                });
+                resolve({
+                    tweets: texts,
+                    images: images
+                });
+            }
+        });
+    });
+};
+
+
 router.get('/', (req, res) => {
-    res.json({'status': 200});
+    const twitterParams = {
+        screen_name: req.query.screen_name,
+        count: req.query.count
+    };
+    timeline(twitterParams)
+        .then((value) => {
+            res.json(value);
+        })
+        .catch((error) => {
+            res.send(500).json({'error': error});
+        });
 });
 
 module.exports = router;

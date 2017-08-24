@@ -29,6 +29,7 @@
             text-align: center;
             margin-bottom: 30px;
         }
+
         .cell:nth-child(odd) {
             background: #37a0e6;
         }
@@ -42,18 +43,38 @@
 <p class="text-right">只今、Foundation 勉強中・・・</p>
 
 <label>Twitter スクリーンネーム
-    <input type="text" value="AbeShinzo">
+    <input type="text" id='screenNameId' value="AbeShinzo">
 </label>
 <label>Twitter タイムライン取得件数
-    <input type="number" value="20">
+    <input type="number" id="countId" value="20">
 </label>
 <label>天気を調べてたい地名
     <input type="text" value="茨城県石岡市">
 </label>
-<button class="button" type="button">AI</button>
+<button class="button" type="button" id="aiBtnId">AI</button>
+<hr>
+<div id="resultId"></div>
 
 <script>
-    $(document).foundation();
+    $(function () {
+        $(document).foundation();
+
+        $('#aiBtnId').on('click', () => {
+            $.ajax({
+                type: 'GET',
+                url: '/oikaze',
+                data: {
+                    'screen_name': $('#screenNameId').val(),
+                    'count': $('#countId').val()
+                },
+                dataType: 'json'
+            }).done((value) => {
+                $('#resultId').html(`<pre>${JSON.stringify(value, undefined, 2)}</pre>`);
+            }).fail((error) => {
+                console.log('error:', error);
+            });
+        });
+    });
 </script>
 </body>
 </html>
