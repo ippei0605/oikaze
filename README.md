@@ -3,6 +3,10 @@
 ## テスト画面
 https://oikaze.au-syd.mybluemix.net/
 
+こちらは以前の懸賞ページです。
+* https://oikaze.au-syd.mybluemix.net/area-filter.html
+* https://oikaze.au-syd.mybluemix.net/distance.html
+
 ## データ
 
 ### アクティビティデータ
@@ -52,7 +56,7 @@ $ node data/load
 ### プッシュ
 1. Bluemix にログインする。 (パスワードを入力してください。)
     ```
-    $ bx login -a https://api.au-syd.bluemix.net -u wbc_2017_1@jiec.co.jp -c 267f9050fc9a825549b77b20817c9d8f -s dev
+     bx login -a https://api.au-syd.bluemix.net -u wbc_2017_1@jiec.co.jp -o wbc_2017_1@jiec.co.jp -c 267f9050fc9a825549b77b20817c9d8f -s dev
     ```
 
 1. アプリをプッシュする。
