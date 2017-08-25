@@ -9,6 +9,7 @@
 
 // モジュールを読込む。
 const
+    axios = require('axios'),
     express = require('express'),
     googleMaps = require('@google/maps'),
     Twitter = require('twitter'),
@@ -101,9 +102,36 @@ const profile = (text) => {
     });
 };
 
+const forecast = (location) => {
+    return axios.get(`https://${context.weatherinsightsCreds.host}/api/weather/v1/geocode/${location.lat}/${location.lng}/forecast/daily/10day.json?language=ja`, {
+        auth: {
+            username: context.weatherinsightsCreds.username,
+            password: context.weatherinsightsCreds.password
+        },
+        headers: {
+            Accept: 'application/json'
+        },
+        timeout: 10000
+    });
+};
+
+const geocode = (address) => {
+    return googleMapsClient.geocode({
+        address: address
+    }).asPromise()
+        .then((value) => {
+            return forecast(value.json.results[0].geometry.location);
+        })
+        .catch((error) => {
+            console.log('error:', error);
+            res.status(500).json(error);
+        });
+};
+
 router.get('/', (req, res) => {
     // パラメータを取得する。
     const
+        address = req.query.address,
         screen_name = req.query.screen_name,
         count = req.query.count || context.APP_SETTINGS.TWITTER_TIMELINE_COUNT,
         recognition_flg = req.query.recognition_flg || 'true',
@@ -111,6 +139,7 @@ router.get('/', (req, res) => {
 
     let temp = {
         "settings": {
+            "address": address,
             "screen_name": screen_name,
             "count": count,
             "recognition_flg": recognition_flg,
@@ -138,25 +167,15 @@ router.get('/', (req, res) => {
         })
         .then((value) => {
             temp.profile = value;
+            return geocode(address);
+        })
+        .then((value) => {
+            temp.weather = value.data;
             res.json(temp);
         })
         .catch((error) => {
             console.log('error:', error);
             res.status(500).json({'error': error});
-        });
-});
-
-
-router.get('/location', (req, res) => {
-    googleMapsClient.geocode({
-        address: req.query.address
-    }).asPromise()
-        .then((value) => {
-            res.json(value.json.results[0].geometry.location);
-        })
-        .catch((error) => {
-            console.log('error:', error);
-            res.status(500).json(error);
         });
 });
 

@@ -11,7 +11,7 @@ out/
 .project
 
 # その他
-.setenv
+.setenv*
 .command-memo
 *.log
 dist/
