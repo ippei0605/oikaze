@@ -1,11 +1,13 @@
 # 追い風
 
 ## テスト画面
-https://oikaze.au-syd.mybluemix.net/
-
-こちらは以前の懸賞ページです。
-* https://oikaze.au-syd.mybluemix.net/area-filter.html
-* https://oikaze.au-syd.mybluemix.net/distance.html
+* 本番
+    - https://oikaze.au-syd.mybluemix.net/
+* バックアップ
+    - https://oikaze.eu-gb.mybluemix.net/
+* 以前の検証ページです。(eu-gbにもあります)
+    - https://oikaze.au-syd.mybluemix.net/area-filter.html
+    - https://oikaze.au-syd.mybluemix.net/distance.html
 
 ## データ
 
