@@ -43,20 +43,26 @@
 <p class="text-right">只今、Foundation 勉強中・・・</p>
 
 <form>
+    <label>天気を調べたい地名
+        <input type="text" id='addressId' value="茨城県石岡市">
+    </label>
     <label>Twitter スクリーンネーム
         <input type="text" id='screenNameId' value="AbeShinzo">
     </label>
     <label>Twitter タイムライン取得件数
         <input type="number" id="countId" value="5">
     </label>
+    <p>画像認識する？</p>
+    <div class="switch large">
+        <input class="switch-input" id="recognitionFlgId" type="checkbox">
+        <label class="switch-paddle" for="recognitionFlgId">
+            <span class="switch-active" aria-hidden="true">Yes</span>
+            <span class="switch-inactive" aria-hidden="true">No</span>
+        </label>
+    </div>
     <label>Visial Recognition スコア
         <input type="number" id="scoreId" value="0.6" max="1" min="0">
     </label>
-    <!--
-    <label>天気を調べてたい地名
-        <input type="text" value="茨城県石岡市">
-    </label>
-    -->
     <button class="button" type="button" id="aiBtnId">AI</button>
 </form>
 
@@ -71,8 +77,10 @@
                 type: 'GET',
                 url: '/oikaze',
                 data: {
+                    'address': $('#addressId').val(),
                     'screen_name': $('#screenNameId').val(),
                     'count': $('#countId').val(),
+                    'recognition_flg': $('#recognitionFlgId').prop('checked'),
                     'score': $('#scoreId').val()
                 },
                 cache: false,

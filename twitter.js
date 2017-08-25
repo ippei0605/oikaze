@@ -18,7 +18,7 @@ const client = new Twitter({
 
 const params = {
     screen_name: 'AbeShinzo',
-    count: 10
+    count: 5
 };
 client.get('statuses/user_timeline', params, (error, tweets, response) => {
     if (error) {

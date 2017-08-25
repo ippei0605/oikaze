@@ -10,6 +10,7 @@
 // モジュールを読込む。
 const
     express = require('express'),
+    googleMaps = require('@google/maps'),
     Twitter = require('twitter'),
     context = require('../utils/context');
 
@@ -21,6 +22,11 @@ const client = new Twitter({
     consumer_secret: 'CMbg3wiemlAUyJ68ERvlWT7sYCx696XYCHraIpWljvwkQbn8Nz',
     access_token_key: '268618165-h3SPrD5wXoHwFKCV7IByL0lClqWLRMIm8NxJ4OhB',
     access_token_secret: 'YpgOYBRI2Os17tAPBCEAsnDcuZWlFXbqg421sngL67f41'
+});
+
+const googleMapsClient = googleMaps.createClient({
+    key: 'AIzaSyCGDCL9Cf2wYuTh0Er_KiqYlgasj-BRFds',
+    Promise: Promise
 });
 
 const timeline = (params) => {
@@ -89,7 +95,6 @@ const profile = (text) => {
                 console.log('error:', error);
                 reject(error);
             } else {
-                console.log('value:', value);
                 resolve(value);
             }
         });
@@ -97,22 +102,38 @@ const profile = (text) => {
 };
 
 router.get('/', (req, res) => {
-    const twitterParams = {
-        "screen_name": req.query.screen_name,
-        "count": req.query.count
+    // パラメータを取得する。
+    const
+        screen_name = req.query.screen_name,
+        count = req.query.count || context.APP_SETTINGS.TWITTER_TIMELINE_COUNT,
+        recognition_flg = req.query.recognition_flg || 'true',
+        score = req.query.score || context.APP_SETTINGS.VISUAL_RECOGNITION_SCORE;
+
+    let temp = {
+        "settings": {
+            "screen_name": screen_name,
+            "count": count,
+            "recognition_flg": recognition_flg,
+            "score": score
+        }
     };
-    let temp = {};
-    timeline(twitterParams)
+    timeline({
+        "screen_name": screen_name,
+        "count": count
+    })
         .then((value) => {
-            temp = value;
-            return Promise.all(value.images.map((url) => {
-                return classify(url, req.query.score);
-            }));
+            Object.assign(temp, value);
+            if (recognition_flg === 'true') {
+                return Promise.all(value.images.map((url) => {
+                    return classify(url, score, recognition_flg);
+                }));
+            } else {
+                return [''];
+            }
         })
         .then((value) => {
             temp.classes = value;
             const text = temp.tweets.join(' ') + value.join(' ');
-            console.log('text:', text);
             return profile(text);
         })
         .then((value) => {
@@ -122,6 +143,20 @@ router.get('/', (req, res) => {
         .catch((error) => {
             console.log('error:', error);
             res.status(500).json({'error': error});
+        });
+});
+
+
+router.get('/location', (req, res) => {
+    googleMapsClient.geocode({
+        address: req.query.address
+    }).asPromise()
+        .then((value) => {
+            res.json(value.json.results[0].geometry.location);
+        })
+        .catch((error) => {
+            console.log('error:', error);
+            res.status(500).json(error);
         });
 });
 
