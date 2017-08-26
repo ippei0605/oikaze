@@ -163,14 +163,11 @@ router.get('/', (req, res) => {
         .then((value) => {
             temp.classes = value;
             const text = temp.tweets.join(' ') + value.join(' ');
-            return profile(text);
+            return Promise.all([profile(text), geocode(address)]);
         })
         .then((value) => {
-            temp.profile = value;
-            return geocode(address);
-        })
-        .then((value) => {
-            temp.weather = value.data;
+            temp.profile = value[0];
+            temp.weather = value[1].data;
             res.json(temp);
         })
         .catch((error) => {
