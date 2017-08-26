@@ -104,20 +104,20 @@ const profile = (text) => {
 
 const forecast = (location) => {
     return axios.get(`https://${context.weatherinsightsCreds.host}/api/weather/v1/geocode/${location.lat}/${location.lng}/forecast/daily/10day.json?language=ja`, {
-        auth: {
-            username: context.weatherinsightsCreds.username,
-            password: context.weatherinsightsCreds.password
+        "auth": {
+            "username": context.weatherinsightsCreds.username,
+            "password": context.weatherinsightsCreds.password
         },
-        headers: {
-            Accept: 'application/json'
+        "headers": {
+            "Accept": 'application/json'
         },
-        timeout: 10000
+        "timeout": 10000
     });
 };
 
 const geocode = (address) => {
     return googleMapsClient.geocode({
-        address: address
+        "address": address
     }).asPromise()
         .then((value) => {
             return forecast(value.json.results[0].geometry.location);
