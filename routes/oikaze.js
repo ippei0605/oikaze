@@ -103,7 +103,7 @@ const profile = (text) => {
 };
 
 const forecast = (location) => {
-    return axios.get(`https://${context.weatherinsightsCreds.host}/api/weather/v1/geocode/${location.lat}/${location.lng}/forecast/daily/10day.json?language=ja`, {
+    return axios.get(`https://${context.weatherinsightsCreds.host}/api/weather/v1/geocode/${location.lat}/${location.lng}/forecast/daily/3day.json?language=ja`, {
         "auth": {
             "username": context.weatherinsightsCreds.username,
             "password": context.weatherinsightsCreds.password
