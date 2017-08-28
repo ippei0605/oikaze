@@ -23,6 +23,13 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
+// TODO
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 // ルートを設定する。
 app.use('/oikaze', require('./routes/oikaze'));
 

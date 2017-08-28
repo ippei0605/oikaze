@@ -17,7 +17,8 @@ const
 // TODO 最適なパラメータを設定する。
 const APP_SETTINGS = {
     TWITTER_TIMELINE_COUNT: 5,
-    VISUAL_RECOGNITION_SCORE: 0.6
+    VISUAL_RECOGNITION_SCORE: 0.6,
+    RADIUS: "20000"
 };
 
 // データベース名

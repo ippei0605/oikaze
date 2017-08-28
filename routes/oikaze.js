@@ -112,7 +112,13 @@ const forecast = (location) => {
             "Accept": 'application/json'
         },
         "timeout": 10000
-    });
+    })
+        .then((value) => {
+            return {
+                "location": location,
+                "weather": value.data
+            }
+        });
 };
 
 const geocode = (address) => {
@@ -128,6 +134,30 @@ const geocode = (address) => {
         });
 };
 
+const recommend = (temp) => {
+    const forecast = temp.weather.forecasts[0].day ? temp.weather.forecasts[0].day : temp.weather.forecasts[0].night;
+    return axios.post('https://oikaze-api.au-syd.mybluemix.net/v2/OikazeSagashi', {
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        area: {
+            "lat": temp.location.lat.toString(),
+            "lon": temp.location.lng.toString(),
+            "radius": temp.settings.radius
+        },
+        insights: {
+            "all_data": {
+                "personality": temp.profile.personality
+            },
+        },
+        weather: {
+            "pop": forecast.pop.toString(),
+            "wspd": forecast.wspd.toString()
+        },
+        "timeout": 10000
+    });
+};
+
 router.get('/', (req, res) => {
     // パラメータを取得する。
     const
@@ -135,7 +165,8 @@ router.get('/', (req, res) => {
         screen_name = req.query.screen_name,
         count = req.query.count || context.APP_SETTINGS.TWITTER_TIMELINE_COUNT,
         recognition_flg = req.query.recognition_flg || 'true',
-        score = req.query.score || context.APP_SETTINGS.VISUAL_RECOGNITION_SCORE;
+        score = req.query.score || context.APP_SETTINGS.VISUAL_RECOGNITION_SCORE,
+        radius = req.query.radius || context.APP_SETTINGS.RADIUS;
 
     let temp = {
         "settings": {
@@ -143,7 +174,8 @@ router.get('/', (req, res) => {
             "screen_name": screen_name,
             "count": count,
             "recognition_flg": recognition_flg,
-            "score": score
+            "score": score,
+            "radius": radius
         }
     };
     timeline({
@@ -167,8 +199,15 @@ router.get('/', (req, res) => {
         })
         .then((value) => {
             temp.profile = value[0];
-            temp.weather = value[1].data;
+            temp.location = value[1].location;
+            temp.weather = value[1].weather;
+            return recommend(temp);
+        })
+        .then((value) => {
+            temp.recommend = value.data[0].recommend;
+            temp.surprise = value.data[0].surprise;
             res.json(temp);
+
         })
         .catch((error) => {
             console.log('error:', error);
