@@ -158,6 +158,40 @@ const recommend = (temp) => {
     });
 };
 
+router.get('/timeline', (req, res) => {
+    // パラメータを取得する。
+    const
+        address = req.query.address,
+        screen_name = req.query.screen_name,
+        count = req.query.count || context.APP_SETTINGS.TWITTER_TIMELINE_COUNT,
+        recognition_flg = req.query.recognition_flg || 'true',
+        score = req.query.score || context.APP_SETTINGS.VISUAL_RECOGNITION_SCORE,
+        radius = req.query.radius || context.APP_SETTINGS.RADIUS;
+
+    let temp = {
+        "settings": {
+            "address": address,
+            "screen_name": screen_name,
+            "count": count,
+            "recognition_flg": recognition_flg,
+            "score": score,
+            "radius": radius
+        }
+    };
+    timeline({
+        "screen_name": screen_name,
+        "count": count
+    })
+        .then((value) => {
+            Object.assign(temp, value);
+            res.json(temp);
+        })
+        .catch((error) => {
+            console.log('error:', error);
+            res.status(500).json({'error': error});
+        });
+});
+
 router.get('/', (req, res) => {
     // パラメータを取得する。
     const

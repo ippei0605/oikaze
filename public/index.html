@@ -18,20 +18,20 @@
 <p class="text-right">只今、Foundation 勉強中・・・</p>
 
 <form>
-    <label>天気を調べたい地名
+    <label>天気を調べたい地名 (必須)
         <input type="text" id='addressId' value="茨城県つくば市">
     </label>
-    <label>半径 (m)
+    <label>半径 (m) (任意)
         <input type="number" id="radiusId" value="20000">
     </label>
 
-    <label>Twitter スクリーンネーム
+    <label>Twitter スクリーンネーム (必須)
         <input type="text" id='screenNameId' value="AbeShinzo">
     </label>
-    <label>Twitter タイムライン取得件数
+    <label>Twitter タイムライン取得件数 (任意)
         <input type="number" id="countId" value="5">
     </label>
-    <p>画像認識する？</p>
+    <p>画像認識する？</p> (任意)
     <div class="switch large">
         <input class="switch-input" id="recognitionFlgId" type="checkbox">
         <label class="switch-paddle" for="recognitionFlgId">
@@ -39,10 +39,11 @@
             <span class="switch-inactive" aria-hidden="true">No</span>
         </label>
     </div>
-    <label>Visial Recognition スコア
+    <label>Visial Recognition スコア (任意)
         <input type="number" id="scoreId" value="0.6" max="1" min="0">
     </label>
     <button class="button" type="button" id="aiBtnId">AI</button>
+    <button class="button" type="button" id="timelineBtnId">Timeline</button>
 </form>
 
 <div id="resultId"></div>
@@ -69,6 +70,33 @@
             $.ajax({
                 type: 'GET',
                 url: '/oikaze',
+                data: {
+                    'address': $('#addressId').val(),
+                    'radius': $('#radiusId').val(),
+                    'screen_name': $('#screenNameId').val(),
+                    'count': $('#countId').val(),
+                    'recognition_flg': $('#recognitionFlgId').prop('checked'),
+                    'score': $('#scoreId').val()
+                },
+                cache: false,
+                dataType: 'json'
+            })
+                .done((value) => {
+                    $('#resultId').html(`<pre>${JSON.stringify(value, undefined, 2)}</pre>`);
+                })
+                .fail((error) => {
+                    console.log('error:', error);
+                })
+                .always(() => {
+                    anime(false);
+                });
+        });
+
+        $('#timelineBtnId').on('click', () => {
+            anime(true);
+            $.ajax({
+                type: 'GET',
+                url: '/oikaze/timeline',
                 data: {
                     'address': $('#addressId').val(),
                     'radius': $('#radiusId').val(),
