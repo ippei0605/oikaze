@@ -2,12 +2,14 @@
 
 ## テスト画面
 * 本番
-    - https://oikaze.au-syd.mybluemix.net/
+    - https://oikaze.au-syd.mybluemix.net/test
 * バックアップ
-    - https://oikaze.eu-gb.mybluemix.net/
+    - https://oikaze.eu-gb.mybluemix.net/test
 * 以前の検証ページです。(eu-gbにもあります)
-    - https://oikaze.au-syd.mybluemix.net/area-filter.html
-    - https://oikaze.au-syd.mybluemix.net/distance.html
+    - https://oikaze.au-syd.mybluemix.net/test/area-filter.html
+    - https://oikaze.au-syd.mybluemix.net/test/distance.html
+
+> ルート直下はクライアントアプリ (Vue.js) を配置予定
 
 ## データ
 

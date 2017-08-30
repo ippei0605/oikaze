@@ -214,6 +214,13 @@ const recognizeAndProfile = (temp) => {
 
 router.post('/recommend', (req, res) => {
     const temp = req.body.temp;
+    temp.label= {
+        "big5_agreeableness": "協調性",
+            "big5_conscientiousness": "誠実性",
+            "big5_extraversion": "外向性",
+            "big5_neuroticism": "感情起伏",
+            "big5_openness": "知的好奇心"
+    };
     Promise.all([recognizeAndProfile(temp), geocode(temp.settings.address)])
         .then((value) => {
             temp.profile = value[0];
