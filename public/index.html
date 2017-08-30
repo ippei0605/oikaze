@@ -44,6 +44,7 @@
     </label>
     <button class="button" type="button" id="aiBtnId">AI</button>
     <button class="button" type="button" id="timelineBtnId">Timeline</button>
+    <button class="button" type="button" id="recommendBtnId">Recommend</button>
 </form>
 
 <div id="resultId"></div>
@@ -51,6 +52,8 @@
 <script>
     $(function () {
         $(document).foundation();
+
+        let temp;
 
         function anime(isStart) {
             const loadingViewId = $('#loading-view');
@@ -104,6 +107,30 @@
                     'count': $('#countId').val(),
                     'recognition_flg': $('#recognitionFlgId').prop('checked'),
                     'score': $('#scoreId').val()
+                },
+                cache: false,
+                dataType: 'json'
+            })
+                .done((value) => {
+                    temp = value;
+                    $('#resultId').html(`<pre>${JSON.stringify(value, undefined, 2)}</pre>`);
+                })
+                .fail((error) => {
+                    console.log('error:', error);
+                })
+                .always(() => {
+                    anime(false);
+                });
+        });
+
+        $('#recommendBtnId').on('click', () => {
+            console.log(temp);
+            anime(true);
+            $.ajax({
+                type: 'POST',
+                url: '/oikaze/recommend',
+                data: {
+                    temp: temp
                 },
                 cache: false,
                 dataType: 'json'

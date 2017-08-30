@@ -135,6 +135,8 @@ const geocode = (address) => {
 };
 
 const recommend = (temp) => {
+    console.log('temp:', temp);
+
     const forecast = temp.weather.forecasts[0].day ? temp.weather.forecasts[0].day : temp.weather.forecasts[0].night;
     return axios.post('https://oikaze-api.au-syd.mybluemix.net/v2/OikazeSagashi', {
         "headers": {
@@ -192,8 +194,46 @@ router.get('/timeline', (req, res) => {
         });
 });
 
+
+const recognizeAndProfile = (temp) => {
+    let classes;
+    if (temp.settings.recognition_flg === 'true') {
+        return Promise.all(temp.images.map((url) => {
+            return classify(url, temp.settings.score);
+        }))
+            .then((value) => {
+                temp.classes = value;
+                const text = temp.tweets.join(' ') + value.join(' ');
+                return profile(text);
+            });
+    } else {
+        const text = temp.tweets.join(' ');
+        return profile(text);
+    }
+};
+
+router.post('/recommend', (req, res) => {
+    const temp = req.body.temp;
+    Promise.all([recognizeAndProfile(temp), geocode(temp.settings.address)])
+        .then((value) => {
+            temp.profile = value[0];
+            temp.location = value[1].location;
+            temp.weather = value[1].weather;
+            return recommend(temp);
+        })
+        .then((value) => {
+            temp.recommend = value.data[0].recommend;
+            temp.surprise = value.data[0].surprise;
+            res.json(temp);
+
+        })
+        .catch((error) => {
+            console.log('error:', error);
+            res.status(500).json({'error': error});
+        });
+});
+
 router.get('/', (req, res) => {
-    // パラメータを取得する。
     const
         address = req.query.address,
         screen_name = req.query.screen_name,
@@ -220,7 +260,7 @@ router.get('/', (req, res) => {
             Object.assign(temp, value);
             if (recognition_flg === 'true') {
                 return Promise.all(value.images.map((url) => {
-                    return classify(url, score, recognition_flg);
+                    return classify(url, score);
                 }));
             } else {
                 return [''];
