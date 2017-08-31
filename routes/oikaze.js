@@ -55,28 +55,33 @@ const timeline = (params) => {
 };
 
 const classify = (url, score) => {
-    return new Promise((resolve, reject) => {
-        context.visualRecognition.classify({
-            "url": url,
-            "Accept-Language": "ja"
-        }, (error, value) => {
-            if (error) {
-                console.log('error:', error);
-                reject(error);
-            } else {
-                let text = '';
-                value.images[0].classifiers[0].classes.forEach((item) => {
-                    if (item.score >= score) {
-                        text += item.class + '、';
-                    }
-                });
-                if (text) {
-                    text += 'の画像をアップロードしました。';
+    return axios.get(`${context.visualRecognitionCreds.url}/v3/classify`, {
+        params: {
+            api_key: context.visualRecognitionCreds.api_key,
+            url: url,
+            version: '2016-05-20'
+        },
+        headers: {
+            'Accept-Language': 'ja'
+        },
+        timeout: context.API_TIMEOUT.VISUAL_RECOGNITION
+    })
+        .then((value) => {
+            let text = '';
+            value.data.images[0].classifiers[0].classes.forEach((item) => {
+                if (item.score >= score) {
+                    text += item.class + '、';
                 }
-                resolve(text);
+            });
+            if (text) {
+                text += 'の画像をアップロードしました。';
             }
+            return text;
+        })
+        .catch((error) => {
+            console.log('error:', error);
+            return '';
         });
-    });
 };
 
 const profile = (text) => {
@@ -154,7 +159,7 @@ const recommend = (temp) => {
             "pop": forecast.pop.toString(),
             "wspd": forecast.wspd.toString()
         },
-        "timeout": 10000
+        "timeout": context.API_TIMEOUT.RECOMMEND
     });
 };
 
@@ -212,12 +217,12 @@ const recognizeAndProfile = (temp) => {
 
 router.post('/recommend', (req, res) => {
     const temp = req.body.temp;
-    temp.label= {
+    temp.label = {
         "big5_agreeableness": "協調性",
-            "big5_conscientiousness": "誠実性",
-            "big5_extraversion": "外向性",
-            "big5_neuroticism": "敏感性",
-            "big5_openness": "好奇心"
+        "big5_conscientiousness": "誠実性",
+        "big5_extraversion": "外向性",
+        "big5_neuroticism": "敏感性",
+        "big5_openness": "好奇心"
     };
     Promise.all([recognizeAndProfile(temp), geocode(temp.settings.address)])
         .then((value) => {

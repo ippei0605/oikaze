@@ -18,7 +18,13 @@ const
 const APP_SETTINGS = {
     TWITTER_TIMELINE_COUNT: 5,
     VISUAL_RECOGNITION_SCORE: 0.6,
-    RADIUS: "20000"
+    RADIUS: "20000",
+};
+
+// API タイムアウト
+const API_TIMEOUT = {
+    VISUAL_RECOGNITION: 5000,
+    RECOMMEND: 5000
 };
 
 // データベース名
@@ -33,19 +39,11 @@ const cloudant = new Cloudant(vcapServices.getCredentials('cloudantNoSQLDB'));
 // Visual Recognition サービス資格情報
 const visualRecognitionCreds = vcapServices.getCredentials('watson_vision_combined');
 
-// Visual Recognition サービス
-const visualRecognition = new watson.VisualRecognitionV3({
-    api_key: visualRecognitionCreds.api_key,
-    version: 'v3',
-    version_date: '2016-05-20'
-});
-
-
 // Personality Insights サービス資格情報
 const personalityInsightsCreds = vcapServices.getCredentials('personality_insights');
 
 // Personality Insights サービス
-var personalityInsights = new watson.PersonalityInsightsV3({
+const personalityInsights = new watson.PersonalityInsightsV3({
     username: personalityInsightsCreds.username,
     password: personalityInsightsCreds.password,
     version_date: '2016-10-19'
@@ -56,18 +54,24 @@ const weatherinsightsCreds = vcapServices.getCredentials('weatherinsights');
 
 /**
  * コンテキスト
+ * @property {object} API_TIMEOUT API タイムアウト
  * @property {object} appEnv 環境変数
+ * @property {object} アプリ設定
  * @property {string} DB_NAME データベース名
  * @property {object} cloudant Cloudant NoSQL DB
+ * @property {object} personalityInsights Personality Insights サービス
+ * @property {object} visualRecognitionCreds Visual Recognition サービス資格情報
+ * @property {object} weatherinsightsCreds Weather Company Data サービス資格情報
  *
- * @type {{appEnv, DB_NAME: string, cloudantCreds: Object}}
+ * @type {{API_TIMEOUT: {VISUAL_RECOGNITION: number, RECOMMEND: number}, appEnv, APP_SETTINGS: {TWITTER_TIMELINE_COUNT: number, VISUAL_RECOGNITION_SCORE: number, RADIUS: string}, DB_NAME: string, cloudant: Cloudant, personalityInsights: PersonalityInsightsV3, visualRecognitionCreds: Object, weatherinsightsCreds: Object}}
  */
 module.exports = {
+    API_TIMEOUT: API_TIMEOUT,
     appEnv: appEnv,
     APP_SETTINGS: APP_SETTINGS,
     DB_NAME: DB_NAME,
     cloudant: cloudant,
     personalityInsights: personalityInsights,
-    visualRecognition: visualRecognition,
+    visualRecognitionCreds: visualRecognitionCreds,
     weatherinsightsCreds: weatherinsightsCreds
 };
