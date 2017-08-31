@@ -17,6 +17,14 @@
 <h1>追い風テストドライバー</h1>
 <p class="text-right">只今、Foundation 勉強中・・・</p>
 
+<div>
+    <p>
+        <fb:login-button scope="public_profile,email,user_photos,user_posts" onlogin="checkLoginState();">
+        </fb:login-button>
+        をクリックして Facebook にログインしてください。　<span id="statusId"></span>
+    </p>
+</div>
+
 <form>
     <label>天気を調べたい地名 (必須)
         <input type="text" id='addressId' value="茨城県つくば市">
@@ -43,7 +51,8 @@
         <input type="number" id="scoreId" value="0.6" max="1" min="0">
     </label>
     <button class="button" type="button" id="aiBtnId">AI</button>
-    <button class="button" type="button" id="timelineBtnId">Timeline</button>
+    <button class="button" type="button" id="feedBtnId">Feed@Facebook</button>
+    <button class="button" type="button" id="timelineBtnId">Timeline@Twitter</button>
     <button class="button" type="button" id="recommendBtnId">Recommend</button>
 </form>
 
@@ -54,6 +63,107 @@
         $(document).foundation();
 
         let temp;
+
+        // This is called with the results from from FB.getLoginStatus().
+        function statusChangeCallback(response) {
+            console.log('statusChangeCallback');
+            console.log(response);
+            // The response object is returned with a status field that lets the
+            // app know the current login status of the person.
+            // Full docs on the response object can be found in the documentation
+            // for FB.getLoginStatus().
+            if (response.status === 'connected') {
+                // Logged into your app and Facebook.
+                testAPI();
+            } else {
+                // The person is not logged into your app or we are unable to tell.
+                $('#statusId').text('Please log into this app.');
+                $('#statusId').addClass('label secondary');
+            }
+        }
+
+        // This function is called when someone finishes with the Login
+        // Button.  See the onlogin handler attached to it in the sample
+        // code below.
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '266513190511087',
+                cookie: true,  // enable cookies to allow the server to access
+                               // the session
+                xfbml: true,  // parse social plugins on this page
+                version: 'v2.10' // use graph api version 2.8
+            });
+            // Now that we've initialized the JavaScript SDK, we call
+            // FB.getLoginStatus().  This function gets the state of the
+            // person visiting this page and can return one of three states to
+            // the callback you provide.  They can be:
+            //
+            // 1. Logged into your app ('connected')
+            // 2. Logged into Facebook, but not your app ('not_authorized')
+            // 3. Not logged into Facebook and can't tell if they are logged into
+            //    your app or not.
+            //
+            // These three cases are handled in the callback function.
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        };
+
+        // Load the SDK asynchronously
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        // Here we run a very simple test of the Graph API after login is
+        // successful.  See statusChangeCallback() for when this call is made.
+        function testAPI() {
+            console.log('Welcome!  Fetching your information.... ');
+            FB.api('/me', function (response) {
+                console.log('Successful login for: ' + response.name);
+                $('#statusId').text(`Thanks for logging in, ${response.name} !`);
+                $('#statusId').addClass('label success');
+            });
+        }
+
+        $('#feedBtnId').on('click', () => {
+            anime(true);
+            const count = $('#countId').val();
+            temp = {
+                'settings': {
+                    'address': $('#addressId').val(),
+                    'screen_name': $('#screenNameId').val(),
+                    'count': count,
+                    'recognition_flg': $('#recognitionFlgId').prop('checked').toString(),
+                    'score': $('#scoreId').val(),
+                    'radius': $('#radiusId').val()
+                }
+            };
+
+            FB.api(`/me/feed?fields=id,message,picture&limit=${count}`, (response) => {
+                const tweets = [], images = [];
+                if (response.data) {
+                    response.data.forEach((item) => {
+                        if (item.message) tweets.push(item.message);
+                        if (item.picture) images.push(item.picture);
+                    });
+                }
+                temp.tweets = tweets;
+                temp.images = images;
+                $('#resultId').html(`<pre>${JSON.stringify(temp, undefined, 2)}</pre>`);
+                anime(false);
+            });
+        });
 
         function anime(isStart) {
             const loadingViewId = $('#loading-view');

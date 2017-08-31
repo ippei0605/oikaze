@@ -8,7 +8,6 @@
   },
   "scripts": {
     "doc": "jsdoc -c jsdoc-conf.json *.js routes/*.js utils/*.js",
-    "postinstall": "node data/load",
     "start": "node app.js"
   },
   "dependencies": {
