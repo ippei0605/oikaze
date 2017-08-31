@@ -135,8 +135,6 @@ const geocode = (address) => {
 };
 
 const recommend = (temp) => {
-    console.log('temp:', temp);
-
     const forecast = temp.weather.forecasts[0].day ? temp.weather.forecasts[0].day : temp.weather.forecasts[0].night;
     return axios.post('https://oikaze-api.au-syd.mybluemix.net/v2/OikazeSagashi', {
         "headers": {
@@ -218,8 +216,8 @@ router.post('/recommend', (req, res) => {
         "big5_agreeableness": "協調性",
             "big5_conscientiousness": "誠実性",
             "big5_extraversion": "外向性",
-            "big5_neuroticism": "感情起伏",
-            "big5_openness": "知的好奇心"
+            "big5_neuroticism": "敏感性",
+            "big5_openness": "好奇心"
     };
     Promise.all([recognizeAndProfile(temp), geocode(temp.settings.address)])
         .then((value) => {
