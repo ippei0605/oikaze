@@ -169,6 +169,7 @@ router.get('/timeline', (req, res) => {
         address = req.query.address,
         screen_name = req.query.screen_name,
         count = req.query.count || context.APP_SETTINGS.TWITTER_TIMELINE_COUNT,
+        include_retweets_flg = req.query.include_retweets_flg || 'false',
         recognition_flg = req.query.recognition_flg || 'true',
         score = req.query.score || context.APP_SETTINGS.VISUAL_RECOGNITION_SCORE,
         radius = req.query.radius || context.APP_SETTINGS.RADIUS;
@@ -178,14 +179,17 @@ router.get('/timeline', (req, res) => {
             "address": address,
             "screen_name": screen_name,
             "count": count,
+            "include_retweets_flg": include_retweets_flg,
             "recognition_flg": recognition_flg,
             "score": score,
             "radius": radius
         }
     };
+    const include_rts = include_retweets_flg === 'true' ? true : false;
     timeline({
         "screen_name": screen_name,
-        "count": count
+        "count": count,
+        "include_rts": include_rts
     })
         .then((value) => {
             Object.assign(temp, value);
