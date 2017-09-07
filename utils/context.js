@@ -10,7 +10,6 @@
 // モジュールを読込む。
 const
     cfenv = require('cfenv'),
-    Cloudant = require('cloudant'),
     vcapServices = require('vcap_services'),
     watson = require('watson-developer-cloud');
 
@@ -27,14 +26,11 @@ const API_TIMEOUT = {
     RECOMMEND: 5000
 };
 
-// データベース名
-const DB_NAME = 'activity';
+// リコメンドエンジン BASE URL
+const API_BASE_URL = process.env.API_BASE_URL || 'https://oikaze-api.au-syd.mybluemix.net/';
 
 // 環境変数
 const appEnv = cfenv.getAppEnv();
-
-// Cloudant NoSQL DB サービス
-const cloudant = new Cloudant(vcapServices.getCredentials('cloudantNoSQLDB'));
 
 // Visual Recognition サービス資格情報
 const visualRecognitionCreds = vcapServices.getCredentials('watson_vision_combined');
@@ -54,23 +50,21 @@ const weatherinsightsCreds = vcapServices.getCredentials('weatherinsights');
 
 /**
  * コンテキスト
+ * @property {object} API_BASE_URL リコメンドエンジン BASE URL
  * @property {object} API_TIMEOUT API タイムアウト
  * @property {object} appEnv 環境変数
  * @property {object} アプリ設定
- * @property {string} DB_NAME データベース名
- * @property {object} cloudant Cloudant NoSQL DB
  * @property {object} personalityInsights Personality Insights サービス
  * @property {object} visualRecognitionCreds Visual Recognition サービス資格情報
  * @property {object} weatherinsightsCreds Weather Company Data サービス資格情報
  *
- * @type {{API_TIMEOUT: {VISUAL_RECOGNITION: number, RECOMMEND: number}, appEnv, APP_SETTINGS: {TWITTER_TIMELINE_COUNT: number, VISUAL_RECOGNITION_SCORE: number, RADIUS: string}, DB_NAME: string, cloudant: Cloudant, personalityInsights: PersonalityInsightsV3, visualRecognitionCreds: Object, weatherinsightsCreds: Object}}
+ * @type {{API_BASE_URL: string, API_TIMEOUT: {VISUAL_RECOGNITION: number, RECOMMEND: number}, appEnv, APP_SETTINGS: {TWITTER_TIMELINE_COUNT: number, VISUAL_RECOGNITION_SCORE: number, RADIUS: string}, personalityInsights: PersonalityInsightsV3, visualRecognitionCreds: Object, weatherinsightsCreds: Object}}
  */
 module.exports = {
+    API_BASE_URL: API_BASE_URL,
     API_TIMEOUT: API_TIMEOUT,
     appEnv: appEnv,
     APP_SETTINGS: APP_SETTINGS,
-    DB_NAME: DB_NAME,
-    cloudant: cloudant,
     personalityInsights: personalityInsights,
     visualRecognitionCreds: visualRecognitionCreds,
     weatherinsightsCreds: weatherinsightsCreds

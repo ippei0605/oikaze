@@ -141,7 +141,7 @@ const geocode = (address) => {
 
 const recommend = (temp) => {
     const forecast = temp.weather.forecasts[0].day ? temp.weather.forecasts[0].day : temp.weather.forecasts[0].night;
-    return axios.post('https://oikaze-api.au-syd.mybluemix.net/v2/OikazeSagashi', {
+    return axios.post(`${context.API_BASE_URL}v2/OikazeSagashi`, {
         "headers": {
             "Content-Type": "application/json"
         },

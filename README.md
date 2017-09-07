@@ -48,6 +48,10 @@
     bx app push oikaze
     ```
 
+1. 環境変数を設定する。
+    - 名前: API_BASE_URL
+    - 値: https://oikaze-api-eu-gb.eu-gb.mybluemix.net/
+
 ## 参考
 * クライアントアプリのリポジトリ
     - https://github.com/jiec-gitou/follow-wind-client
