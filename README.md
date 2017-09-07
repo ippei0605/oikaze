@@ -1,61 +1,21 @@
 # 追い風
 
+## アプリ画面
+* (できれば)スマホから以下の URL にアクセスしてください。
+    - https://oikaze.au-syd.mybluemix.net/#start
+
 ## テスト画面
 * 本番
     - https://oikaze.au-syd.mybluemix.net/test
 * バックアップ
     - https://oikaze.eu-gb.mybluemix.net/test
-* 以前の検証ページです。(eu-gbにもあります)
+* 以前の検証ページです。(eu-gbにもありますが、コールバックの関係で Facebook には対応してません。)
     - https://oikaze.au-syd.mybluemix.net/test/area-filter.html
     - https://oikaze.au-syd.mybluemix.net/test/distance.html
 
-> ルート直下はクライアントアプリ (Vue.js) を配置予定
+> ルート直下はクライアントアプリ (Vue.js) を配置
 
-## データ
-
-### アクティビティデータ
-* data/activity.json に作成しました。
-
-### マスター
-* data/master.csv に作成しました。(Excel から抽出、LF, UTF-8 に変換)
-
-### 設計文書
-* _design/geodd
-
-  - インデックス /st_indexes/geoidx
-    ```
-    function(doc) {
-      if (doc.geometry && doc.geometry.coordinates) {
-        st_index(doc.geometry);
-      }
-    }
-    ```
-
-  - マップ /views/list
-    ```
-    function (doc) {
-        var row = {
-            "_id": doc._id,
-            "_rev": doc._rev,
-            "type": doc.type,
-            "geometry": doc.geometry,
-            "properties": doc.properties,
-        };
-        emit(doc._id, row);
-    }
-    ```
-
-### データロード方法
-```
-$ node data/load
-```
-> ローカル環境で実行する場合は、環境変数 VCAP_SERVICES を設定してください。
-
-> サーバー環境では、プッシュ時の postinstall で実行するように設定しております。設計文書は既存の場合はエラー、同一キーのデータは上書きされないため、連続で実行させても問題ありません。
-
-> $ はプロンプトです。
-
-## アプリ
+## セットアップ
 
 ### プッシュ
 1. Bluemix にログインする。 (パスワードを入力してください。)
@@ -69,4 +29,9 @@ $ node data/load
     ```
 
 ## 参考
-* https://docs.cloudant.com/geo.html#example:-querying-a-cloudant-geo-index
+* クライアントアプリのリポジトリ
+    - https://github.com/jiec-gitou/follow-wind-client
+* 管理およびリコメンドエンジンのリポジトリ
+    - https://github.com/jiec-gitou/wbc_manage
+* EXAMPLE: QUERYING A CLOUDANT GEO INDEX
+    - https://docs.cloudant.com/geo.html#example:-querying-a-cloudant-geo-index
