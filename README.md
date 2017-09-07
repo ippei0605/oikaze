@@ -16,7 +16,19 @@
     - https://oikaze.au-syd.mybluemix.net/test/area-filter.html
     - https://oikaze.au-syd.mybluemix.net/test/distance.html
 
-> ルート直下はクライアントアプリ (Vue.js) を配置
+    > ルート直下はクライアントアプリ (Vue.js) を配置
+
+
+## エラーハンドリング
+サーバーエラーは全てステータス 500 でエラーオブジェクトを返しています。代表的なエラーを以下に示します。
+* ツイッターのスクリーンネームが無い
+    - responseJSON.error[0].code = 34
+    - responseJSON.error[0].message = "Sorry, that page does not exist."
+* 性格分析 (Personality Insights) で語数が不足して分析できない
+    - responseJSON.error.code = 400
+    - responseJSON.error.error = "単語数 88 が、分析に必要な最小単語数よりも少なくなっています: 100"
+    
+        > 数値は例です。
 
 ## セットアップ
 
