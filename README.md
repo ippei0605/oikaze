@@ -5,7 +5,7 @@
 * 本番
     - https://oikaze.au-syd.mybluemix.net/#start
 * バックアップ
-    - https://oikaze.au-syd.mybluemix.net/#start
+    - https://oikaze.eu-gb.mybluemix.net/#start
 
 ## テスト画面
 * 本番
