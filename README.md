@@ -4,7 +4,7 @@
 (できれば) スマホから以下の URL にアクセスしてください。
 * 本番
     - https://oikaze.au-syd.mybluemix.net/#start
-* バックアップ
+* バックアップ (コールバックの関係で Facebook 未対応)
     - https://oikaze.eu-gb.mybluemix.net/#start
 
 ## テスト画面
@@ -12,7 +12,7 @@
     - https://oikaze.au-syd.mybluemix.net/test
 * バックアップ
     - https://oikaze.eu-gb.mybluemix.net/test
-* 以前の検証ページです。(eu-gbにもありますが、コールバックの関係で Facebook には対応してません。)
+* 以前の検証ページです。(eu-gbにもあります。)
     - https://oikaze.au-syd.mybluemix.net/test/area-filter.html
     - https://oikaze.au-syd.mybluemix.net/test/distance.html
 
