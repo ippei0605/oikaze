@@ -28,7 +28,7 @@
     - responseJSON.error.code = 400
     - responseJSON.error.error = "単語数 88 が、分析に必要な最小単語数よりも少なくなっています: 100"
     
-        > 数値は例です。
+        > 単語数の数値 (88) は例です。
 
 ## セットアップ
 
