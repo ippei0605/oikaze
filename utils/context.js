@@ -10,6 +10,7 @@
 // モジュールを読込む。
 const
     cfenv = require('cfenv'),
+    Cloudant = require('cloudant'),
     vcapServices = require('vcap_services'),
     watson = require('watson-developer-cloud');
 
@@ -32,6 +33,12 @@ const API_BASE_URL = process.env.API_BASE_URL || 'https://oikaze-api.au-syd.mybl
 // 環境変数
 const appEnv = cfenv.getAppEnv();
 
+// Cloudant NoSQL DB サービス
+const cloudant = new Cloudant(process.env.CLOUDANT_URL);
+
+// データベースを使用する。
+const log = cloudant.db.use('log');
+
 // Visual Recognition サービス資格情報
 const visualRecognitionCreds = vcapServices.getCredentials('watson_vision_combined');
 
@@ -53,7 +60,8 @@ const weatherinsightsCreds = vcapServices.getCredentials('weatherinsights');
  * @property {object} API_BASE_URL リコメンドエンジン BASE URL
  * @property {object} API_TIMEOUT API タイムアウト
  * @property {object} appEnv 環境変数
- * @property {object} アプリ設定
+ * @property {object} APP_SETTINGS アプリ設定
+ * @property {object} log log データベース
  * @property {object} personalityInsights Personality Insights サービス
  * @property {object} visualRecognitionCreds Visual Recognition サービス資格情報
  * @property {object} weatherinsightsCreds Weather Company Data サービス資格情報
@@ -65,6 +73,7 @@ module.exports = {
     API_TIMEOUT: API_TIMEOUT,
     appEnv: appEnv,
     APP_SETTINGS: APP_SETTINGS,
+    log: log,
     personalityInsights: personalityInsights,
     visualRecognitionCreds: visualRecognitionCreds,
     weatherinsightsCreds: weatherinsightsCreds

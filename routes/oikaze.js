@@ -12,6 +12,7 @@ const
     axios = require('axios'),
     express = require('express'),
     googleMaps = require('@google/maps'),
+    moment = require('moment'),
     Twitter = require('twitter'),
     context = require('../utils/context');
 
@@ -238,11 +239,26 @@ router.post('/recommend', (req, res) => {
         .then((value) => {
             temp.recommend = value.data[0].recommend;
             temp.surprise = value.data[0].surprise;
+            context.log.insert({
+                "datetime": moment().format(),
+                "data": temp
+            }, (error, value) => {
+                if (error) {
+                    console.log('error:', error);
+                }
+            });
             res.json(temp);
-
         })
         .catch((error) => {
             console.log('error:', error);
+            context.log.insert({
+                "datetime": moment().format(),
+                "error": error
+            }, (error, value) => {
+                if (error) {
+                    console.log('error:', error);
+                }
+            });
             res.status(500).json({'error': error});
         });
 });

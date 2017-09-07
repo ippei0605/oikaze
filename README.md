@@ -30,6 +30,10 @@
     
         > 単語数の数値 (88) は例です。
 
+## ロギング
+最終的に取得できたデータ (data)、またはエラーオブジェクト (error) はタイムスタンプ (datetime) とともに log データベースに登録しております。Cloudant のサービス資格情報は環境変数で設定しております。(別組織のためバインドできません、後述)
+
+
 ## セットアップ
 
 ### クライアントアプリの組込み
@@ -49,6 +53,12 @@
     bx app push oikaze
     ```
 
+1. 環境変数を設定する。
+
+    |名前           |値     |
+    | :---------- | :----- | 
+    |CLOUDANT_URL  |https://412c4383-2907-48a7-8ed3-7c5330d287d0-bluemix:d5b407a58653ba93f161e304b3a6e15b99a5f806b1c576322b0fe3b947f64c08@412c4383-2907-48a7-8ed3-7c5330d287d0-bluemix.cloudant.com|
+
 ### バックアップ @ロンドン
 1. Bluemix にログインする。 (パスワードを入力してください。)
     ```
@@ -61,8 +71,12 @@
     ```
 
 1. 環境変数を設定する。
-    - 名前: API_BASE_URL
-    - 値: https://oikaze-api-eu-gb.eu-gb.mybluemix.net/
+
+    |名前           |値     |
+    | :---------- | :----- |
+    |API_BASE_URL |https://oikaze-api-eu-gb.eu-gb.mybluemix.net/|
+    |CLOUDANT_URL |https://8a7bd247-8bf3-446d-ad5d-fdb5b7e947ab-bluemix:974e12653ad2c43ae85d441b5ea503c29e4f63f1a5ff20a2beb55e08adfffdb8@8a7bd247-8bf3-446d-ad5d-fdb5b7e947ab-bluemix.cloudant.com|
+
 
 ## 参考
 * クライアントアプリのリポジトリ
