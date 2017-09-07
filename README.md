@@ -1,7 +1,10 @@
 # 追い風
 
 ## アプリ画面
-* (できれば)スマホから以下の URL にアクセスしてください。
+(できれば) スマホから以下の URL にアクセスしてください。
+* 本番
+    - https://oikaze.au-syd.mybluemix.net/#start
+* バックアップ
     - https://oikaze.au-syd.mybluemix.net/#start
 
 ## テスト画面
@@ -17,10 +20,27 @@
 
 ## セットアップ
 
-### プッシュ
+### クライアントアプリの組込み
+* ローカルを最新化してください。
+* mystore.js に定義されている baseURL: 'https://oikaze.au-syd.mybluemix.net/', を行ごと削除してください。(3箇所)
+* npm run build
+* dist 配下 (index.html および static デフィレクトリー) を こちらの public 配下にコピーしてください。
+
+### 本番 @シドニー
 1. Bluemix にログインする。 (パスワードを入力してください。)
     ```
      bx login -a https://api.au-syd.bluemix.net -u wbc_2017_1@jiec.co.jp -o wbc_2017_1@jiec.co.jp -c 267f9050fc9a825549b77b20817c9d8f -s dev
+    ```
+
+1. アプリをプッシュする。
+    ```
+    bx app push oikaze
+    ```
+
+### バックアップ @ロンドン
+1. Bluemix にログインする。 (パスワードを入力してください。)
+    ```
+     bx login -a https://api.eu-gb.bluemix.net -u wbc_2017_1@jiec.co.jp -o wbc_2017_1@jiec.co.jp -c 267f9050fc9a825549b77b20817c9d8f -s dev
     ```
 
 1. アプリをプッシュする。
